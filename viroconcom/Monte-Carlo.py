@@ -36,18 +36,42 @@ for i in dataList:
     array2.append(i[1])
 array.append(array1)
 array.append(array2)
-print(array)
+#print(array1)
+for i in dataList:
+    i[0] = float(i[0])
+    i[1] = float(i[1])
+print(dataList)
+#Array1 sortieren
+array1 = sorted(array1)
+#print(array1)
+#
+#Durchschnitt
 
+a = 0.0
+for i in array1:
+    a = a+float(i)
+mean = a/len(array1)
+print(mean)
 
-#
-#
-#
+#Varianz
+b = 0.0
+for i in array1:
+    b = b + ((float(i)-mean)*(float(i)-mean))
+var = b/(len(array1)-1)
+print(var)
+
+#Standartabweichung
+import math
+s = math.sqrt(var)
+print(s)
+
 import numpy as np
-import matplotlib as mlp
+import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
-#xmin, xmax, ymin, ymax = 0, 20, 0, 20
-#plt.axis([xmin, xmax, ymin, ymax])
-plt.plot(array1, array2, ',')
-plt.xticks(np.arange(0, 100, 10))
-plt.yticks(np.arange(0, 100, 10))
+from scipy import stats
+
+
+df = pd.DataFrame(dataList, columns=["x", "y"])
+sns.jointplot(x='x', y='y', data=df)
 plt.show()
