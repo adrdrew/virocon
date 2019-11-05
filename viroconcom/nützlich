@@ -1,0 +1,19 @@
+import random
+import numpy as np
+from matplotlib import pyplot as plt
+
+i = random.randint(1,10)
+if i == 1:
+    print(i)
+else:
+    print("fail: ", i)
+
+
+from scipy.stats import uniform
+uniform_dist = uniform(loc = 0, scale = 20)
+uniform_dist.rvs(size = 10, random_state = random.randint(0,20))
+x = np.linspace(-5, 25, 100)
+_, ax = plt.subplots(1, 1)
+ax.plot(x, uniform_dist.pdf(x), 'r-', lw = 2)
+plt.title('Uniform distribution of values between 0 and 20')
+plt.show()
