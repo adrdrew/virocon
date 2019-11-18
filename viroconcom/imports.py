@@ -1,3 +1,4 @@
+class ECMWFImport
 
 export ECMWF_API_URL="https://api.ecmwf.int/v1"
 export ECMWF_API_KEY="5779c25ba27168b4e35275198c308319"
