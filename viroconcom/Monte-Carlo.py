@@ -4,54 +4,33 @@ import matplotlib.pyplot as plt
 import netCDF4
 import numpy as np
 import scipy.stats as sts
-from mpl_toolkits.basemap import Basemap
+import matplotlib.patches as mpatches
+import xarray as xr
 from viroconcom.contours import IFormContour
 from viroconcom.fitting import Fit
 
 
 def get_data_coast():
-    significant_wave_height = netCDF4.Dataset('cD-2_WAM-North_Sea_hs_1965.nc', 'r')
-    wave_period = netCDF4.Dataset('cD-2_WAM-North_Sea_tm2_1965.nc', 'r')
-    significant_wave_height_lons = significant_wave_height.variables['lon'][:]
-    significant_wave_height_lats = significant_wave_height.variables['lat'][:]
-    significant_wave_height_hs = significant_wave_height.variables['hs'][:]
-    wave_period_lons = wave_period.variables['lon'][:]
-    wave_period_lats = wave_period.variables['lat'][:]
-    wave_period_tm2 = wave_period.variables['tm2'][:]
-    hs_units = significant_wave_height.variables['hs'].units
-    tm2_units = wave_period.variables['tms'].units
-    significant_wave_height.close()
-    wave_period.close()
+    significant_wave_height = xr.open_dataset('cD-2_WAM-North_Sea_hs_1965.nc')
+    wave_period = xr.open_dataset('cD-2_WAM-North_Sea_tm2_1965.nc')
+    print(significant_wave_height)
+    print(wave_period)
 
-    #significant wave height
-    lon_0 = significant_wave_height_lons.mean()
-    lat_0 = significant_wave_height_lats.mean()
-    m_0 = Basemap(width=5000000, height=3500000, resolution='l', projection='stere', lat_ts=40, lat_0=lat_0, lon_0=lon_0)
-    lon0, lat0 = np.meshgrid(significant_wave_height_lons, significant_wave_height_lats)
-    xi, yi = m_0(lon0, lat0)
-    cs = m_0.pcolor(xi, yi, np.squeeze(significant_wave_height_hs))
-    # Add Grid Lines
-    m_0.drawparallels(np.arange(-80., 81., 10.), labels=[1, 0, 0, 0], fontsize=10)
-    m_0.drawmeridians(np.arange(-180., 181., 10.), labels=[0, 0, 0, 1], fontsize=10)
+    #daily_data_swh = significant_wave_height.groupby('time.hour').mean('time')
+    #daily_data_wp = wave_period.groupby('time.hour').mean('time')
 
-    # Add Coastlines, States, and Country Boundaries
-    m_0.drawcoastlines()
-    m_0.drawstates()
-    m_0.drawcountries()
+    swh = significant_wave_height.sel(lon=14, lat=40, method='nearest')
+    wp = wave_period.sel(lon=21, lat=12, method='nearest')
+    s = swh.to_dataframe()
+    w = wp.to_dataframe()
+    print(w)
 
-    # Add Colorbar
-    cbar = m_0.colorbar(cs, location='bottom', pad="10%")
-    cbar.set_label(hs_units)
 
-    plt.show()
-
-    #wave period
-    lon_1 = wave_period_lons.mean()
-    lat_1 = wave_period_lats.mean()
-    m_1 = Basemap(width=5000000, height=3500000, resolution='l', projection='stere', lat_ts=40, lat_0=lat_1, lon_0=lon_1)
-    lon1, lat1 = np.meshgrid(wave_period_lons, wave_period_lats)
-    xa, ya = m_1(lon1, lat1)
-
+    #plt.plot(swh['hs'].data, wp['tm2'].data, 'k.')
+    #plt.show()
+    #swh['hs'].plot.line('o-', color='blue', figsize=(15,10))
+    #plt.ylim((-0.5, 10))
+    #plt.show()
 
 def get_data_ndbc():
     datalist = []
