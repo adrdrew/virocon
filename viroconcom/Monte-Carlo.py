@@ -19,11 +19,24 @@ def get_data_coast():
     #daily_data_swh = significant_wave_height.groupby('time.hour').mean('time')
     #daily_data_wp = wave_period.groupby('time.hour').mean('time')
 
+    #longitude and latitude = längen und breiten Gradde an denen die Daten abgerufen werden sollen
     swh = significant_wave_height.sel(lon=14, lat=40, method='nearest')
     wp = wave_period.sel(lon=21, lat=12, method='nearest')
     s = swh.to_dataframe()
     w = wp.to_dataframe()
     print(w)
+
+    #convert pandasDataframe into list
+    s_hs = s.get('hs')
+    wp_tm2 = wp.get('tm2')
+    s_list = []
+    wp_list = []
+    for i in s_hs:
+        s_list.append(i)
+    for i in wp_tm2:
+        wp_list.append(i)
+
+    return s_list, wp_list
 
 
     #plt.plot(swh['hs'].data, wp['tm2'].data, 'k.')
@@ -97,9 +110,8 @@ def show_contour(my_fit, sea_state_sample):
     plt.show()
 
 
-#data0, data1 = get_data_ndbc()
-#show_data(data0, data1)
-#my_fit, sea_state_sample = fit(data0, data1)
-#show_contour(my_fit, sea_state_sample)
+data0, data1 = get_data_coast()
+show_data(data0, data1)
+my_fit, sea_state_sample = fit(data0, data1)
+show_contour(my_fit, sea_state_sample)
 
-get_data_coast()
