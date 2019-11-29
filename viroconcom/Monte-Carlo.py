@@ -1,49 +1,30 @@
 import csv
-
+import random
 import matplotlib.pyplot as plt
-import netCDF4
+
 import numpy as np
+import numpy.ma as ma
 import scipy.stats as sts
-import matplotlib.patches as mpatches
+import netCDF4
 import xarray as xr
 from viroconcom.contours import IFormContour
 from viroconcom.fitting import Fit
 
 
 def get_data_coast():
-    significant_wave_height = xr.open_dataset('cD-2_WAM-North_Sea_hs_1965.nc')
-    wave_period = xr.open_dataset('cD-2_WAM-North_Sea_tm2_1965.nc')
-    print(significant_wave_height)
-    print(wave_period)
+    significant_wave_height = netCDF4.Dataset('cD-2_WAM-North_Sea_hs_1966.nc', 'r')
+    wave_period = netCDF4.Dataset('cD-2_WAM-North_Sea_tm2_1966.nc', 'r')
+    #print(significant_wave_height.variables)
+    #print(significant_wave_height.variables['lon'][:])
 
-    #daily_data_swh = significant_wave_height.groupby('time.hour').mean('time')
-    #daily_data_wp = wave_period.groupby('time.hour').mean('time')
+    lats = significant_wave_height.variables['lat'][:]
+    lons = significant_wave_height.variables['lon'][:]
+    lat_idx = np.abs(lats - 53).argmin()
+    lon_idx = np.abs(lons - 14).argmin()
+    wh = significant_wave_height.variables['hs'][:]
+    wp = wave_period.variables['tm2'][:]
 
-    #longitude and latitude = längen und breiten Gradde an denen die Daten abgerufen werden sollen
-    swh = significant_wave_height.sel(lon=14, lat=40, method='nearest')
-    wp = wave_period.sel(lon=21, lat=12, method='nearest')
-    s = swh.to_dataframe()
-    w = wp.to_dataframe()
-    print(w)
-
-    #convert pandasDataframe into list
-    s_hs = s.get('hs')
-    wp_tm2 = wp.get('tm2')
-    s_list = []
-    wp_list = []
-    for i in s_hs:
-        s_list.append(i)
-    for i in wp_tm2:
-        wp_list.append(i)
-
-    return s_list, wp_list
-
-
-    #plt.plot(swh['hs'].data, wp['tm2'].data, 'k.')
-    #plt.show()
-    #swh['hs'].plot.line('o-', color='blue', figsize=(15,10))
-    #plt.ylim((-0.5, 10))
-    #plt.show()
+    print(wh)
 
 def get_data_ndbc():
     datalist = []
@@ -64,7 +45,7 @@ def get_data_ndbc():
 
 
 def show_data(coast, coast2):
-    print(coast)
+
     fig1 = plt.figure()
     plt.plot(coast, coast2, '.k')
     plt.show()
@@ -110,8 +91,16 @@ def show_contour(my_fit, sea_state_sample):
     plt.show()
 
 
+def random_numbers():
+    list = []
+    i = 0
+    while i <= 1000:
+        list.append(random.randint(0, 99))
+        i= i+1
+    print(list)
+#random_numbers()
 data0, data1 = get_data_coast()
-show_data(data0, data1)
-my_fit, sea_state_sample = fit(data0, data1)
-show_contour(my_fit, sea_state_sample)
+#show_data(data0, data1)
+#my_fit, sea_state_sample = fit(data0, data1)
+#show_contour(my_fit, sea_state_sample)
 
