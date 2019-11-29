@@ -76,3 +76,45 @@ def _plot_data():
     df = pd.DataFrame(data_list, columns=["x", "y"])
     sns.jointplot(x='x', y='y', data=df)
     plt.show()
+
+
+
+# omega = scale
+# mu = location
+def _normal_density_function(x, omega, mu):
+    return (1 / math.sqrt(2 * math.pi * omega ** 2)) * math.exp((-(x - mu) ** 2) / (2 * omega ** 2))
+
+# math.exp(mu) = scale
+# omega = shape
+def _lognormal_density_function(x, omega, mu):
+    return (1 / (x * omega * math.sqrt(2 * math.pi))) * math.exp((-(math.log10(x) - mu) ** 2) / (2 * omega ** 2))
+
+# a = scale
+# b = shape
+# c = location
+def _weibull_density_function(a, b, c):
+    x = 1
+    list = []
+    list1 = []
+    list2 = []
+    if x >= c:
+        while x <= 10:
+
+            list1.append(x)
+            list2.append((b / a) * (((x - c) / a) ** (b - 1)) * math.exp(-((x - c) / a) ** b))
+
+            x = x+0.001
+
+        list.append(list1)
+        list.append(list2)
+        return list
+    else:
+        raise Exception('x must be greater or equal to c')
+
+
+print(_normal_density_function(1, 1.25, 2))
+print(_lognormal_density_function(1, 1.25, 2))
+print(_weibull_density_function(1.25, 2, 0.125))
+
+plt.plot(_weibull_density_function(2.776, 1.471, 0.8888), 'ro')
+plt.show()
