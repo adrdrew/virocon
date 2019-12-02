@@ -21,10 +21,10 @@ def get_data_coast():
     lons = significant_wave_height.variables['lon'][:]
     lat_idx = np.abs(lats - 53).argmin()
     lon_idx = np.abs(lons - 14).argmin()
-    wh = significant_wave_height.variables['hs'][:]
-    wp = wave_period.variables['tm2'][:]
+    wh = significant_wave_height.variables['hs'][:, 72, 152]
+    wp = wave_period.variables['tm2'][:, 72, 152]
 
-    print(wh)
+    return wh, wp
 
 def get_data_ndbc():
     datalist = []
@@ -47,7 +47,9 @@ def get_data_ndbc():
 def show_data(coast, coast2):
 
     fig1 = plt.figure()
-    plt.plot(coast, coast2, '.k')
+    plt.xlabel('zero-upcrossing period (s)')
+    plt.ylabel('Wave height (m)')
+    plt.plot(coast2, coast, '.k')
     plt.show()
 
 
@@ -100,7 +102,9 @@ def random_numbers():
     print(list)
 #random_numbers()
 data0, data1 = get_data_coast()
-#show_data(data0, data1)
-#my_fit, sea_state_sample = fit(data0, data1)
-#show_contour(my_fit, sea_state_sample)
+show_data(data0, data1)
+my_fit, sea_state_sample = fit(data0, data1)
+show_contour(my_fit, sea_state_sample)
+
+
 
