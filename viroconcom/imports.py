@@ -3,10 +3,15 @@
 # !/usr/bin/env python
 from ecmwfapi import ECMWFDataServer
 
-def _get_data():
-    server = ECMWFDataServer(url="https://api.ecmwf.int/v1",key='5779c25ba27168b4e35275198c308319',email='lbekov@uni-bremen.de')
 
 
+
+
+
+
+def _getECMWF():
+    server = ECMWFDataServer(url="https://api.ecmwf.int/v1", key='5779c25ba27168b4e35275198c308319',
+                             email='lbekov@uni-bremen.de')
 
     server.retrieve({
         "class": "ei",
@@ -23,10 +28,12 @@ def _get_data():
         "target": "output",
     })
 
-import cfgrib
 
-def _test_get():
-    test = cfgrib.Dataset("Output")
+from cfgrib import Dataset
+
+def _cfgrib():
+    test = Dataset.variables\
+        ('_mars-atls05-70e05f9f8ba4e9d19932f1c45a7be8d8-eZjCl5.grib')
     print(test)
 
-_test_get()
+_cfgrib()
