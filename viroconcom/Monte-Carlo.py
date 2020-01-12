@@ -23,7 +23,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from scipy import stats
+import scipy.stats as sts
+from scipy import integrate
 
 
 def _plot_data():
@@ -79,42 +80,129 @@ def _plot_data():
 
 
 
-# omega = scale
-# mu = location
-def _normal_density_function(x, omega, mu):
-    return (1 / math.sqrt(2 * math.pi * omega ** 2)) * math.exp((-(x - mu) ** 2) / (2 * omega ** 2))
-
-# math.exp(mu) = scale
-# omega = shape
-def _lognormal_density_function(x, omega, mu):
-    return (1 / (x * omega * math.sqrt(2 * math.pi))) * math.exp((-(math.log10(x) - mu) ** 2) / (2 * omega ** 2))
-
-# a = scale
-# b = shape
-# c = location
-def _weibull_density_function(a, b, c):
-    x = 1
-    list = []
-    list1 = []
-    list2 = []
-    if x >= c:
-        while x <= 10:
-
-            list1.append(x)
-            list2.append((b / a) * (((x - c) / a) ** (b - 1)) * math.exp(-((x - c) / a) ** b))
-
-            x = x+0.001
-
-        list.append(list1)
-        list.append(list2)
-        return list
-    else:
-        raise Exception('x must be greater or equal to c')
 
 
-print(_normal_density_function(1, 1.25, 2))
-print(_lognormal_density_function(1, 1.25, 2))
-print(_weibull_density_function(1.25, 2, 0.125))
 
-plt.plot(_weibull_density_function(2.776, 1.471, 0.8888), 'ro')
-plt.show()
+import random
+def __init__(self):
+    return None
+def _montecarlo():
+    roll = random.randint(0,100)
+
+    if roll == 100:
+        #print(roll, 'roll was 100 you lose. What are the odds?!')
+        return False
+    elif roll <= 50:
+        #print(roll, 'roll was 1-50, you lose')
+        return False
+    elif 100 > roll > 50:
+        #print(roll, 'roll was 51 to 99, you win! ')
+        return True
+
+
+def doubler_bettor(funds, initial_wager, wager_counter):
+    value = funds
+    wager = initial_wager
+
+    wX = []
+    vY = []
+
+    currentWager = 1
+    previousWager = 'win'
+    previousWagerAmount = initial_wager
+
+    while currentWager <= wager_counter:
+        if previousWager == 'win':
+            print('we won last time wager, great')
+            if _montecarlo():
+                value+=wager
+                print(value)
+                wX.append(currentWager)
+                vY.append(value)
+            else:
+                value -= wager
+                previousWager = 'loss'
+                print(value)
+                previousWagerAmount = wager
+                wX.append(currentWager)
+                vY.append(value)
+                if value < 0:
+                    print('Broke after'.currentWager, 'bets')
+                    break
+
+        elif previousWager == 'loss':
+            print('we lost the last one, so we will be smart and double')
+            if _montecarlo():
+                wager = previousWagerAmount * 2
+                print('we won', wager)
+                value += wager
+                print(value)
+                wager = initial_wager
+                previousWager = 'win'
+                wX.append(currentWager)
+                vY.append(value)
+            else:
+                wager = previousWagerAmount * 2
+                print('we lost', wager)
+                value -= wager
+                if value < 0:
+                    print('we went broke after',currentWager,'bets')
+                    break
+
+                print(value)
+                previousWager = 'loss'
+                previousWagerAmount = wager
+                wX.append(currentWager)
+                vY.append(value)
+
+        currentWager += 1
+    print(value)
+    plt.plot(wX, vY)
+
+
+
+def simple_bettor(funds, initial_wager, wager_counter):
+    value = funds
+    wager = initial_wager
+
+    wX = []
+    vY = []
+    curretnWager = 1
+
+    while curretnWager <= wager_counter:
+        if _montecarlo():
+            value += wager
+            wX.append(curretnWager)
+            vY.append(value)
+        else:
+            value -= wager
+            wX.append(curretnWager)
+            vY.append(value)
+        curretnWager += 1
+
+    if value < 0:
+        value = 'broke'
+        #print('Funds:', value)
+
+    plt.plot(wX,vY)
+
+
+def _random_weibull(shape, loc, scale):
+    x = np.linspace(0.0, 100.0, num=100)
+    q = np.linspace(0.0, 1.0, num=100)
+
+    density = sts.weibull_min.pdf(x, c=shape, loc=loc, scale=scale)
+    distribution = sts.weibull_min.cdf(x, c=shape, loc=loc, scale=scale)
+    percent_point = sts.weibull_min.ppf(q, c=shape, loc=loc, scale=scale)
+    plt.plot(density)
+    plt.plot(distribution)
+    plt.plot(percent_point)
+    plt.axis([0, 100, 0, 20])
+    plt.show()
+    value = sts.weibull_min.ppf(0.50, c=shape, loc=loc, scale=scale)
+    print(value)
+
+
+
+
+_random_weibull(1.5, 0.9, 2.8)
