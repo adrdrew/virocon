@@ -20,6 +20,7 @@ class ECMWFDataServer():
         'time': "06:00:00",
         'step': "0",
         # all available parameters, for codes see http://apps.ecmwf.int/codes/grib/param-db
+        # 229.140/232.140 means Mean wave period/Significant height of combined wind waves and swell
         'param': "229.140/232.140",
         # days worth of data
         'date': "2015-06-01/to/2015-06-30",
