@@ -6,6 +6,9 @@ URL = 'https://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/?date
 page = requests.get(URL)
 
 soup = BeautifulSoup(page.content, 'html.parser')
-
 print(soup.prettify())
+
+
+
+
 
